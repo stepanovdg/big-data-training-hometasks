@@ -5,6 +5,7 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -90,7 +91,6 @@ public class Runner extends Configured implements Tool {
     switch ( m ) {
       case LONGEST_WORD_v1:
         job.setMapperClass( LongestMapper.class );
-        job.setCombinerClass( LongestReducer.class );
         job.setReducerClass( LongestReducer.class );
 
         job.setMapOutputKeyClass( DescendingIntWritable.class );
@@ -103,6 +103,7 @@ public class Runner extends Configured implements Tool {
         job.setReducerClass( LongestReducerComplex.class );
 
         job.setMapOutputKeyClass( ComplexIntTextWritable.class );
+        job.setMapOutputValueClass( NullWritable.class );
         job.setOutputKeyClass( DescendingIntWritable.class );
         job.setOutputValueClass( Text.class );
         break;

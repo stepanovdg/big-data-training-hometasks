@@ -1,9 +1,8 @@
 package org.stepanovdg.mapreduce.task1;
 
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.ReduceContext;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.log4j.Logger;
 import org.stepanovdg.mapreduce.task1.writable.ComplexIntTextWritable;
 
 import java.io.IOException;
@@ -12,18 +11,15 @@ import java.util.Iterator;
 /**
  * Created by Dmitriy Stepanov on 16.02.18.
  */
-public class LongestCombinerComplex extends Reducer<ComplexIntTextWritable, Text, ComplexIntTextWritable, Text> {
-  private static final Logger logger = Logger.getLogger( LongestCombinerComplex.class );
+public class LongestCombinerComplex
+  extends Reducer<ComplexIntTextWritable, NullWritable, ComplexIntTextWritable, NullWritable> {
   private static int maxLength = 0;
+  private static final NullWritable nul = NullWritable.get();
 
   @Override
-  protected void reduce( ComplexIntTextWritable key, Iterable<Text> values, Context context )
+  protected void reduce( ComplexIntTextWritable key, Iterable<NullWritable> values, Context context )
     throws IOException, InterruptedException {
-    if ( logger.isDebugEnabled() ) {
-      logger.debug( "ReduceRead" + key );
-    }
-
-    context.write( key, key.getText() );
+    context.write( key, nul );
   }
 
   @Override public void run( Context context ) throws IOException, InterruptedException {
@@ -44,9 +40,9 @@ public class LongestCombinerComplex extends Reducer<ComplexIntTextWritable, Text
   private void resetBackup(
     Context context )
     throws IOException, InterruptedException {
-    Iterator<Text> iter = context.getValues().iterator();
+    Iterator<NullWritable> iter = context.getValues().iterator();
     if ( iter instanceof ReduceContext.ValueIterator ) {
-      ( (ReduceContext.ValueIterator<Text>) iter ).resetBackupStore();
+      ( (ReduceContext.ValueIterator<NullWritable>) iter ).resetBackupStore();
     }
   }
 

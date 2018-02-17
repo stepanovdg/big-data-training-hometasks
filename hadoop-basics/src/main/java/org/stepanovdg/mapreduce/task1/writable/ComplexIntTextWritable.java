@@ -1,6 +1,5 @@
 package org.stepanovdg.mapreduce.task1.writable;
 
-import com.sun.istack.internal.NotNull;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
@@ -24,7 +23,7 @@ public class ComplexIntTextWritable implements WritableComparable<ComplexIntText
     intWritable = new DescendingIntWritable();
   }
 
-  public ComplexIntTextWritable( String string, int intV ) {
+  public ComplexIntTextWritable( int intV, String string ) {
     text = new Text( string );
     intWritable = new DescendingIntWritable( intV );
 
@@ -72,7 +71,7 @@ public class ComplexIntTextWritable implements WritableComparable<ComplexIntText
     return text.hashCode() + intWritable.hashCode();
   }
 
-  public int compareTo( @NotNull ComplexIntTextWritable o ) {
+  public int compareTo( ComplexIntTextWritable o ) {
     int intCompareResult = this.intWritable.compareTo( o.intWritable );
     if ( intCompareResult == 0 ) {
       return this.text.compareTo( o.text );

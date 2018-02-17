@@ -13,7 +13,7 @@
 
   <artifactId>hadoop-basics</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <name>Hometasks for hadoop basics module</name>
 
@@ -30,6 +30,7 @@
       <artifactId>mrunit</artifactId>
       <version>${mrunit.version}</version>
       <classifier>hadoop2</classifier>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
