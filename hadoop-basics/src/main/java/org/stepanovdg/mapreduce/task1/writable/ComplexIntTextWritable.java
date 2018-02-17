@@ -3,6 +3,7 @@ package org.stepanovdg.mapreduce.task1.writable;
 import com.sun.istack.internal.NotNull;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.WritableComparator;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -88,6 +89,26 @@ public class ComplexIntTextWritable implements WritableComparable<ComplexIntText
   public void readFields( DataInput in ) throws IOException {
     intWritable.readFields( in );
     text.readFields( in );
+  }
+
+  static {                                        // register this comparator
+    WritableComparator.define( ComplexIntTextWritable.class, new Comparator() );
+  }
+
+  public static class Comparator extends WritableComparator {
+    public Comparator() {
+      super( ComplexIntTextWritable.class );
+    }
+
+    @Override
+    public int compare( byte[] b1, int s1, int l1,
+                        byte[] b2, int s2, int l2 ) {
+      int thisValue = readInt( b1, s1 );
+      int thatValue = readInt( b2, s2 );
+      return ( thisValue < thatValue ? 1 :
+        ( thisValue == thatValue ? WritableComparator.compareBytes( b1, s1 + 4, l1 - 4,
+          b2, s2 + 4, l2 - 4 ) : -1 ) );
+    }
   }
 
 }
