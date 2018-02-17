@@ -17,7 +17,7 @@ public class LongestMapperTest {
   @Before
   public void setUp() throws Exception {
     LongestMapper mapper = new LongestMapper();
-    new MapDriver<LongWritable,Text,IntWritable,Text>();
+    new MapDriver<LongWritable, Text, IntWritable, Text>();
   }
 
   @After

@@ -1,6 +1,7 @@
 package org.stepanovdg.mapreduce.runner;
 
 import java.util.ResourceBundle;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -26,65 +27,65 @@ public class Runner extends Configured implements Tool {
   public static final String JOB_NAME = "longest_word";
   private static ResourceBundle bundle;
 
-  public static void main(String[] args) throws Exception {
+  public static void main( String[] args ) throws Exception {
     printHelp();
-    int res = ToolRunner.run(new Configuration(), new Runner(), args);
-    System.exit(res);
+    int res = ToolRunner.run( new Configuration(), new Runner(), args );
+    System.exit( res );
   }
 
   private static void printHelp() {
-    bundle = ResourceBundle.getBundle("runner");
-    System.out.println(bundle.getString("usage"));
+    bundle = ResourceBundle.getBundle( "runner" );
+    System.out.println( bundle.getString( "usage" ) );
   }
 
-  public int run(String[] args) throws Exception {
+  public int run( String[] args ) throws Exception {
     Configuration conf = getConf();
 
-    if (args.length != 0 && args.length != 2) {
+    if ( args.length != 0 && args.length != 2 ) {
       return 2;
     }
 
     String inputDir = "/wordcount/input";
     String outputDir = "/wordcount/output";
 
-    FileSystem fs = FileSystem.get(conf);
+    FileSystem fs = FileSystem.get( conf );
     Path home = fs.getHomeDirectory();
     Path inputPath;
     Path outputPath;
-    if (args.length == 2) {
-      inputDir = args[0];
-      outputDir = args[1];
-      inputPath = new Path(inputDir);
-      outputPath = new Path(outputDir);
+    if ( args.length == 2 ) {
+      inputDir = args[ 0 ];
+      outputDir = args[ 1 ];
+      inputPath = new Path( inputDir );
+      outputPath = new Path( outputDir );
     } else {
-      inputPath = new Path(home, inputDir);
-      outputPath = new Path(home, outputDir);
+      inputPath = new Path( home, inputDir );
+      outputPath = new Path( home, outputDir );
     }
 
-    if (!fs.exists(inputPath)) {
+    if ( !fs.exists( inputPath ) ) {
       return 3;
     }
 
-    if (fs.exists(outputPath)) {
-      fs.delete(outputPath, true);
+    if ( fs.exists( outputPath ) ) {
+      fs.delete( outputPath, true );
     }
 
-    Job job = Job.getInstance(conf, JOB_NAME);
-    job.setJarByClass(getClass());
+    Job job = Job.getInstance( conf, JOB_NAME );
+    job.setJarByClass( getClass() );
 
-    FileInputFormat.addInputPath(job, inputPath);
-    FileOutputFormat.setOutputPath(job, outputPath);
+    FileInputFormat.addInputPath( job, inputPath );
+    FileOutputFormat.setOutputPath( job, outputPath );
 
-    job.setMapperClass(LongestMapper.class);
-    job.setCombinerClass(LongestReducer.class);
-    job.setReducerClass(LongestReducer.class);
+    job.setMapperClass( LongestMapper.class );
+    job.setCombinerClass( LongestReducer.class );
+    job.setReducerClass( LongestReducer.class );
 
-    job.setMapOutputKeyClass(DescendingIntWritable.class);
-    job.setOutputKeyClass(IntWritable.class);
-    job.setOutputValueClass(Text.class);
+    job.setMapOutputKeyClass( DescendingIntWritable.class );
+    job.setOutputKeyClass( IntWritable.class );
+    job.setOutputValueClass( Text.class );
 
-    job.setNumReduceTasks(1);
+    job.setNumReduceTasks( 1 );
 
-    return job.waitForCompletion(true) ? 0 : 1;
+    return job.waitForCompletion( true ) ? 0 : 1;
   }
 }
