@@ -2,16 +2,18 @@ package org.stepanovdg.mapreduce.task1;
 
 import java.io.IOException;
 import java.util.Iterator;
+
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.MarkableIterator;
 import org.apache.hadoop.mapreduce.ReduceContext;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.stepanovdg.mapreduce.task1.writable.DescendingIntWritable;
 
 /**
  * Created by Dmitriy Stepanov on 16.02.18.
  */
-public class LongestReducer extends Reducer<IntWritable, Text, IntWritable, Text> {
+public class LongestReducer extends Reducer<DescendingIntWritable, Text, IntWritable, Text> {
 
  /* @Override
   public void run(Context context) throws IOException, InterruptedException {
@@ -50,7 +52,7 @@ public class LongestReducer extends Reducer<IntWritable, Text, IntWritable, Text
     }
   }*/
 
-  @Override
+  /*@Override
   protected void reduce(IntWritable key, Iterable<Text> values, Context context)
       throws IOException, InterruptedException {
     MarkableIterator<Text> mitr = new MarkableIterator<Text>(values.iterator());
@@ -66,6 +68,30 @@ public class LongestReducer extends Reducer<IntWritable, Text, IntWritable, Text
       }
     } else {
       mitr.clearMark();
+    }
+  }*/
+
+  @Override
+  protected void reduce( DescendingIntWritable key, Iterable<Text> values, Context context )
+    throws IOException, InterruptedException {
+    for ( Text t : values ) {
+      context.write( key, t );
+    }
+  }
+
+  @Override public void run( Context context ) throws IOException, InterruptedException {
+    setup( context );
+    try {
+      if ( context.nextKey() ) {
+        reduce( context.getCurrentKey(), context.getValues(), context );
+        // If a back up store is used, reset it
+        Iterator<Text> iter = context.getValues().iterator();
+        if ( iter instanceof ReduceContext.ValueIterator ) {
+          ( (ReduceContext.ValueIterator<Text>) iter ).resetBackupStore();
+        }
+      }
+    } finally {
+      cleanup( context );
     }
   }
 }

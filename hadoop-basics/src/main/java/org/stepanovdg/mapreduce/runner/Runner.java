@@ -16,6 +16,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.stepanovdg.mapreduce.task1.LongestMapper;
 import org.stepanovdg.mapreduce.task1.LongestReducer;
+import org.stepanovdg.mapreduce.task1.writable.DescendingIntWritable;
 
 /**
  * Created by Dmitriy Stepanov on 16.02.18.
@@ -78,6 +79,7 @@ public class Runner extends Configured implements Tool {
     job.setCombinerClass(LongestReducer.class);
     job.setReducerClass(LongestReducer.class);
 
+    job.setMapOutputKeyClass(DescendingIntWritable.class);
     job.setOutputKeyClass(IntWritable.class);
     job.setOutputValueClass(Text.class);
 

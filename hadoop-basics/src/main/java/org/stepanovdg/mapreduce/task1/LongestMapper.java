@@ -6,13 +6,14 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.stepanovdg.mapreduce.task1.writable.DescendingIntWritable;
 
 /**
  * Created by Dmitriy Stepanov on 16.02.18.
  */
-public class LongestMapper extends Mapper<LongWritable, Text, IntWritable, Text> {
+public class LongestMapper extends Mapper<LongWritable, Text, DescendingIntWritable, Text> {
 
-  private final static IntWritable lengthOut = new IntWritable(0);
+  private final static DescendingIntWritable lengthOut = new DescendingIntWritable(0);
   private Text word = new Text();
   private static Integer maxLength = 0;
 
