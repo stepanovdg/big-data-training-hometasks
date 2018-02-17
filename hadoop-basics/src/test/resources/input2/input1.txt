@@ -1,0 +1,19 @@
+Shuffle
+Input to the Reducer is the sorted output of the mappers. In this phase the framework fetches the relevant partition of the output of all the mappers, via HTTP.
+
+Sort
+The framework groups Reducer inputs by keys (since different mappers may have output the same key) in this stage.
+
+The shuffle and sort phases occur ; while map-outputs are being fetched they are merged.
+
+Secondary Sort
+If equivalence rules for grouping the intermediate keys are required to be different from those for grouping keys before reduction, then one may specify a Comparator via . Since  can be used to control how intermediate keys are grouped, these can be used in conjunction to simulate secondary sort on values.
+
+Reduce
+In this phase the reduce method is called for each <key, (list of values)> pair in the grouped inputs.
+
+The output of the reduce task is typically written to the FileSystem via .
+
+Applications can use the Counter to report its statistics.
+
+The output of the Reducer is not sorted.
