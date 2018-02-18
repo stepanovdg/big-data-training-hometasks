@@ -19,6 +19,7 @@
 
   <properties>
     <mrunit.version>1.1.0</mrunit.version>
+    <UserAgentUtils.version>1.21</UserAgentUtils.version>
   </properties>
   <dependencies>
     <dependency>
@@ -31,6 +32,11 @@
       <version>${mrunit.version}</version>
       <classifier>hadoop2</classifier>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>eu.bitwalker</groupId>
+      <artifactId>UserAgentUtils</artifactId>
+      <version>${UserAgentUtils.version}</version>
     </dependency>
   </dependencies>
 </project>

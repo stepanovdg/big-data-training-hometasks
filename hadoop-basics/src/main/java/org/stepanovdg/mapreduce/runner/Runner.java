@@ -10,6 +10,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.stepanovdg.mapreduce.task1.LongestCombinerComplex;
@@ -19,15 +21,20 @@ import org.stepanovdg.mapreduce.task1.LongestReducer;
 import org.stepanovdg.mapreduce.task1.LongestReducerComplex;
 import org.stepanovdg.mapreduce.task1.writable.ComplexIntTextWritable;
 import org.stepanovdg.mapreduce.task1.writable.DescendingIntWritable;
+import org.stepanovdg.mapreduce.task2.LogsCombiner;
+import org.stepanovdg.mapreduce.task2.LogsMapper;
+import org.stepanovdg.mapreduce.task2.LogsReducer;
 
 import java.util.ResourceBundle;
+
+import static org.stepanovdg.mapreduce.task2.Constants.OUT_SEPARATOR;
 
 /**
  * Created by Dmitriy Stepanov on 16.02.18.
  */
 public class Runner extends Configured implements Tool {
 
-  private static final String JOB_NAME = "longest_word";
+  private static final String JOB_NAME = "stepanovdg";
   private static ResourceBundle bundle;
 
   public static void main( String[] args ) throws Exception {
@@ -88,6 +95,8 @@ public class Runner extends Configured implements Tool {
 
     FileInputFormat.addInputPath( job, inputPath );
     FileOutputFormat.setOutputPath( job, outputPath );
+    job.setJobName( JOB_NAME + m );
+    boolean showCounters = false;
     switch ( m ) {
       case LONGEST_WORD_v1:
         job.setMapperClass( LongestMapper.class );
@@ -96,6 +105,7 @@ public class Runner extends Configured implements Tool {
         job.setMapOutputKeyClass( DescendingIntWritable.class );
         job.setOutputKeyClass( IntWritable.class );
         job.setOutputValueClass( Text.class );
+        job.setNumReduceTasks( 1 );
         break;
       case LONGEST_WORD_v2:
         job.setMapperClass( LongestMapperComplex.class );
@@ -106,11 +116,52 @@ public class Runner extends Configured implements Tool {
         job.setMapOutputValueClass( NullWritable.class );
         job.setOutputKeyClass( DescendingIntWritable.class );
         job.setOutputValueClass( Text.class );
+        job.setNumReduceTasks( 1 );
+        break;
+      case PARSE_LOGS_FORIP_v1:
+        job.setMapperClass( LogsMapper.class );
+        job.setCombinerClass( LogsCombiner.class );
+        job.setReducerClass( LogsReducer.class );
+
+        job.setOutputFormatClass( TextOutputFormat.class );
+        job.getConfiguration().set( "mapred.textoutputformat.separator", OUT_SEPARATOR );
+
+        job.setMapOutputKeyClass( IntWritable.class );
+        job.setMapOutputValueClass( Text.class );
+
+        job.setOutputKeyClass( Text.class );
+        job.setOutputValueClass( Text.class );
+
+        showCounters = true;
+        break;
+      case PARSE_LOGS_FORIP_v2:
+
+        job.setMapperClass( LogsMapper.class );
+        job.setCombinerClass( LogsCombiner.class );
+        job.setReducerClass( LogsReducer.class );
+
+        //SequenceFileAsBinaryOutputFormat.class
+        job.setOutputFormatClass( SequenceFileOutputFormat.class );
+        job.getConfiguration().set( "mapreduce.output.fileoutputformat.compress", "true" );
+        job.getConfiguration()
+          .set( "mapreduce.output.fileoutputformat.compress.codec", "org.apache.hadoop.io.compress.SnappyCodec" );
+        job.getConfiguration().set( "mapreduce.output.fileoutputformat.compress.type", "BLOCK" );
+
+        job.setMapOutputKeyClass( IntWritable.class );
+        job.setMapOutputValueClass( Text.class );
+
+        job.setOutputKeyClass( Text.class );
+        job.setOutputValueClass( Text.class );
+
+        showCounters = true;
         break;
     }
 
-    job.setNumReduceTasks( 1 );
 
-    return job.waitForCompletion( true ) ? 0 : 1;
+    int i = job.waitForCompletion( true ) ? 0 : 1;
+    if ( showCounters ) {
+      System.out.println( job.getCounters() );
+    }
+    return i;
   }
 }
