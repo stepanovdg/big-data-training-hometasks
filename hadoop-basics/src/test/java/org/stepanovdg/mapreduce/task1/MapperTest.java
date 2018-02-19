@@ -4,6 +4,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.stepanovdg.mapreduce.task1.writable.ComplexIntTextWritable;
@@ -97,5 +98,11 @@ public class MapperTest {
     mapDriverComplex.withOutput( new ComplexIntTextWritable( 4, "eeee" ), NUL );
     mapDriverComplex.withOutput( new ComplexIntTextWritable( 4, "eeee" ), NUL );
     mapDriverComplex.runTest();
+  }
+
+  @After
+  public void tearDown() {
+    mapDriver.resetExpectedCounters();
+    mapDriver.resetOutput();
   }
 }

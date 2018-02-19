@@ -40,4 +40,16 @@ public class DescendingIntWritable extends IntWritable {
       return ( thisValue < thatValue ? 1 : ( thisValue == thatValue ? 0 : -1 ) );
     }
   }
+
+  @Override public boolean equals( Object o ) {
+    return super.equals( o );
+  }
+
+  @Override public int hashCode() {
+    return super.hashCode();
+  }
+
+  @Override public String toString() {
+    return super.toString();
+  }
 }
