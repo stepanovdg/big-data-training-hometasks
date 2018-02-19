@@ -6,7 +6,9 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.compress.SnappyCodec;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -22,8 +24,13 @@ import org.stepanovdg.mapreduce.task1.LongestReducerComplex;
 import org.stepanovdg.mapreduce.task1.writable.ComplexIntTextWritable;
 import org.stepanovdg.mapreduce.task1.writable.DescendingIntWritable;
 import org.stepanovdg.mapreduce.task2.LogsCombiner;
+import org.stepanovdg.mapreduce.task2.LogsCombinerCustom;
 import org.stepanovdg.mapreduce.task2.LogsMapper;
+import org.stepanovdg.mapreduce.task2.LogsMapperCustom;
 import org.stepanovdg.mapreduce.task2.LogsReducer;
+import org.stepanovdg.mapreduce.task2.LogsReducerCustom;
+import org.stepanovdg.mapreduce.task2.writable.TotalAndAverageWritable;
+import org.stepanovdg.mapreduce.task2.writable.TotalAndCountWritable;
 
 import java.util.ResourceBundle;
 
@@ -136,22 +143,30 @@ public class Runner extends Configured implements Tool {
         break;
       case PARSE_LOGS_FORIP_v2:
 
-        job.setMapperClass( LogsMapper.class );
-        job.setCombinerClass( LogsCombiner.class );
-        job.setReducerClass( LogsReducer.class );
+        job.setMapperClass( LogsMapperCustom.class );
+        job.setCombinerClass( LogsCombinerCustom.class );
+        job.setReducerClass( LogsReducerCustom.class );
 
         //SequenceFileAsBinaryOutputFormat.class
         job.setOutputFormatClass( SequenceFileOutputFormat.class );
-        job.getConfiguration().set( "mapreduce.output.fileoutputformat.compress", "true" );
+       /* job.getConfiguration().set( "mapreduce.output.fileoutputformat.compress", "true" );
         job.getConfiguration()
           .set( "mapreduce.output.fileoutputformat.compress.codec", "org.apache.hadoop.io.compress.SnappyCodec" );
         job.getConfiguration().set( "mapreduce.output.fileoutputformat.compress.type", "BLOCK" );
+*/
+        FileOutputFormat.setCompressOutput( job, true );
+        FileOutputFormat.setOutputCompressorClass( job, SnappyCodec.class );
+        SequenceFileOutputFormat.setOutputCompressionType( job, SequenceFile.CompressionType.BLOCK );
 
         job.setMapOutputKeyClass( IntWritable.class );
-        job.setMapOutputValueClass( Text.class );
+        job.setMapOutputValueClass( TotalAndCountWritable.class );
 
         job.setOutputKeyClass( Text.class );
-        job.setOutputValueClass( Text.class );
+        job.setOutputValueClass( TotalAndAverageWritable.class );
+
+
+        //SnappyCodec.checkNativeCodeLoaded();
+        //loadSnappyLD( job );
 
         showCounters = true;
         break;
@@ -163,5 +178,20 @@ public class Runner extends Configured implements Tool {
       System.out.println( job.getCounters() );
     }
     return i;
+  }
+
+  private void loadSnappyLD( Job job ) {
+    String adminUserEnvPropertyName = "mapreduce.admin.user.env";
+    String userEnv = job.getConfiguration().get( adminUserEnvPropertyName );
+    /*if ( userEnv != null && userEnv.contains( "LD_LIBRARY_PATH=" ) ) {
+      userEnv = userEnv + ":/usr/lib64/";
+    } else if ( userEnv == null ) {
+      userEnv = "LD_LIBRARY_PATH=$HADOOP_COMMON_HOME/lib/native:/usr/lib64/";
+    } else{
+      userEnv = userEnv + "LD_LIBRARY_PATH=$HADOOP_COMMON_HOME/lib/native:/usr/lib64/";
+    }*/
+    userEnv =
+      userEnv + "\r\n LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$HADOOP_COMMON_HOME/lib/native:/usr/lib64";
+    job.getConfiguration().set( adminUserEnvPropertyName, userEnv );
   }
 }
