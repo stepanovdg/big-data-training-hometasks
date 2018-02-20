@@ -5,6 +5,7 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
@@ -31,7 +32,12 @@ import org.stepanovdg.mapreduce.task2.LogsReducer;
 import org.stepanovdg.mapreduce.task2.LogsReducerCustom;
 import org.stepanovdg.mapreduce.task2.writable.TotalAndAverageWritable;
 import org.stepanovdg.mapreduce.task2.writable.TotalAndCountWritable;
+import org.stepanovdg.mapreduce.task3.HighBidCombiner;
+import org.stepanovdg.mapreduce.task3.HighBidMapper;
+import org.stepanovdg.mapreduce.task3.HighBidReducer;
+import org.stepanovdg.mapreduce.task3.input.HighBidInputFormat;
 
+import java.net.URI;
 import java.util.ResourceBundle;
 
 import static org.stepanovdg.mapreduce.task2.Constants.OUT_SEPARATOR;
@@ -42,6 +48,9 @@ import static org.stepanovdg.mapreduce.task2.Constants.OUT_SEPARATOR;
 public class Runner extends Configured implements Tool {
 
   private static final String JOB_NAME = "stepanovdg";
+  public static final String WORDCOUNT_INPUT = "/wordcount/input";
+  public static final String WORDCOUNT_OUTPUT = "/wordcount/output";
+  public static final String CITY_DICTIONARY = "/wordcount/city";
   private static ResourceBundle bundle;
 
   public static void main( String[] args ) throws Exception {
@@ -58,19 +67,21 @@ public class Runner extends Configured implements Tool {
   public int run( String[] args ) throws Exception {
     Configuration conf = getConf();
 
-    if ( args.length != 0 && args.length != 3 ) {
+    if ( args.length != 0 && args.length < 3 || args.length > 5 ) {
       return 2;
     }
 
-    String inputDir = "/wordcount/input";
-    String outputDir = "/wordcount/output";
+    String inputDir = WORDCOUNT_INPUT;
+    String outputDir = WORDCOUNT_OUTPUT;
 
     FileSystem fs = FileSystem.get( conf );
     Mode m = Mode.LONGEST_WORD_v1;
     Path home = fs.getHomeDirectory();
-    Path inputPath;
+    Path inputPath = null;
     Path outputPath;
-    if ( args.length == 3 ) {
+    String cityFileOnHDFS_EN = CITY_DICTIONARY;
+    String cityFileOnHDFS_CN = null;
+    if ( args.length != 0 ) {
       try {
         int ordinalMode = Integer.parseInt( args[ 0 ] );
         if ( ordinalMode - 1 > Mode.values().length ) {
@@ -82,14 +93,23 @@ public class Runner extends Configured implements Tool {
       }
       inputDir = args[ 1 ];
       outputDir = args[ 2 ];
-      inputPath = new Path( inputDir );
+      if ( !inputDir.contains( "," ) ) {
+        inputPath = new Path( inputDir );
+      }
       outputPath = new Path( outputDir );
+      if ( args.length == 4 ) {
+        cityFileOnHDFS_EN = args[ 3 ];
+      }
+      if ( args.length == 5 ) {
+        cityFileOnHDFS_EN = args[ 3 ];
+        cityFileOnHDFS_CN = args[ 4 ];
+      }
     } else {
       inputPath = new Path( home, inputDir );
       outputPath = new Path( home, outputDir );
     }
 
-    if ( !fs.exists( inputPath ) ) {
+    if ( inputPath != null && !fs.exists( inputPath ) ) {
       return 3;
     }
 
@@ -100,7 +120,11 @@ public class Runner extends Configured implements Tool {
     Job job = Job.getInstance( conf, JOB_NAME );
     job.setJarByClass( getClass() );
 
-    FileInputFormat.addInputPath( job, inputPath );
+    if ( inputPath != null ) {
+      FileInputFormat.addInputPath( job, inputPath );
+    } else {
+      FileInputFormat.addInputPaths( job, inputDir );
+    }
     FileOutputFormat.setOutputPath( job, outputPath );
     job.setJobName( JOB_NAME + m );
     boolean showCounters = false;
@@ -166,9 +190,32 @@ public class Runner extends Configured implements Tool {
 
 
         //SnappyCodec.checkNativeCodeLoaded();
-        //loadSnappyLD( job );
-
         showCounters = true;
+        break;
+      case AMOUNT_HIGH_BID_v1:
+        job.setMapperClass( HighBidMapper.class );
+        job.setCombinerClass( HighBidCombiner.class );
+        job.setReducerClass( HighBidReducer.class );
+
+        job.setInputFormatClass( HighBidInputFormat.class );
+
+        job.setMapOutputKeyClass( IntWritable.class );
+        job.setMapOutputValueClass( LongWritable.class );
+
+        job.setOutputKeyClass( Text.class );
+        job.setOutputValueClass( LongWritable.class );
+
+        job.addCacheFile(
+          new URI( cityFileOnHDFS_EN + "#" + org.stepanovdg.mapreduce.task3.Constants.CITY_DICTIONARY_FILE_NAME_EN ) );
+        if ( cityFileOnHDFS_CN != null ) {
+          job.addCacheFile(
+            new URI(
+              cityFileOnHDFS_CN + "#" + org.stepanovdg.mapreduce.task3.Constants.CITY_DICTIONARY_FILE_NAME_CN ) );
+        }
+
+        break;
+      case AMOUNT_HIGH_BID_v2:
+
         break;
     }
 
@@ -180,18 +227,4 @@ public class Runner extends Configured implements Tool {
     return i;
   }
 
-  private void loadSnappyLD( Job job ) {
-    String adminUserEnvPropertyName = "mapreduce.admin.user.env";
-    String userEnv = job.getConfiguration().get( adminUserEnvPropertyName );
-    /*if ( userEnv != null && userEnv.contains( "LD_LIBRARY_PATH=" ) ) {
-      userEnv = userEnv + ":/usr/lib64/";
-    } else if ( userEnv == null ) {
-      userEnv = "LD_LIBRARY_PATH=$HADOOP_COMMON_HOME/lib/native:/usr/lib64/";
-    } else{
-      userEnv = userEnv + "LD_LIBRARY_PATH=$HADOOP_COMMON_HOME/lib/native:/usr/lib64/";
-    }*/
-    userEnv =
-      userEnv + "\r\n LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$HADOOP_COMMON_HOME/lib/native:/usr/lib64";
-    job.getConfiguration().set( adminUserEnvPropertyName, userEnv );
-  }
 }

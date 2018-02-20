@@ -14,8 +14,8 @@ import static org.stepanovdg.mapreduce.task2.Constants.TEMP_SEPARATOR;
  */
 public class LogsReducer extends Reducer<IntWritable, Text, Text, Text> {
 
-  private static final Text out = new Text();
-  private static final Text ip = new Text();
+  private final Text out = new Text();
+  private final Text ip = new Text();
 
 
   @Override protected void reduce( IntWritable key, Iterable<Text> values, Context context )

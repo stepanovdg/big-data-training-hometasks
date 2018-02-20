@@ -38,6 +38,12 @@
       <artifactId>UserAgentUtils</artifactId>
       <version>${UserAgentUtils.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.carrotsearch</groupId>
+      <artifactId>junit-benchmarks</artifactId>
+      <version>LATEST</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

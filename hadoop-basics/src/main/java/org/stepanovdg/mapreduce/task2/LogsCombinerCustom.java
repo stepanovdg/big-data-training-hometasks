@@ -12,7 +12,7 @@ import java.io.IOException;
 public class LogsCombinerCustom
   extends Reducer<IntWritable, TotalAndCountWritable, IntWritable, TotalAndCountWritable> {
 
-  private static final TotalAndCountWritable out = new TotalAndCountWritable();
+  private final TotalAndCountWritable out = new TotalAndCountWritable();
 
   @Override protected void reduce( IntWritable key, Iterable<TotalAndCountWritable> values, Context context )
     throws IOException, InterruptedException {

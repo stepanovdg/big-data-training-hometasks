@@ -21,8 +21,8 @@ public class LogsMapperCustom extends Mapper<LongWritable, Text, IntWritable, To
 
   private static final Logger logger = Logger.getLogger( LogsMapperCustom.class );
 
-  private static final IntWritable ip = new IntWritable();
-  private static final TotalAndCountWritable out = new TotalAndCountWritable();
+  private final IntWritable ip = new IntWritable();
+  private final TotalAndCountWritable out = new TotalAndCountWritable();
 
 
   private Pattern pattern;

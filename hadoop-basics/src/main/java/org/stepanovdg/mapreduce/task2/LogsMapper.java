@@ -20,8 +20,8 @@ public class LogsMapper extends Mapper<LongWritable, Text, IntWritable, Text> {
 
   private static final Logger logger = Logger.getLogger( LogsMapper.class );
 
-  private static final IntWritable ip = new IntWritable();
-  private static final Text out = new Text();
+  private final IntWritable ip = new IntWritable();
+  private final Text out = new Text();
 
 
   private Pattern pattern;

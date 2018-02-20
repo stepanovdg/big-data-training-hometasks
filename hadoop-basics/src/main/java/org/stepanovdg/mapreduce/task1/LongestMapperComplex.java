@@ -14,8 +14,8 @@ import java.util.StringTokenizer;
  */
 public class LongestMapperComplex extends Mapper<LongWritable, Text, ComplexIntTextWritable, NullWritable> {
 
-  public static final NullWritable nul = NullWritable.get();
-  private static final ComplexIntTextWritable complexOut = new ComplexIntTextWritable( 0, "" );
+  private static final NullWritable nul = NullWritable.get();
+  private final ComplexIntTextWritable complexOut = new ComplexIntTextWritable( 0, "" );
   private static Integer maxLength = 0;
 
   @Override

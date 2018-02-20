@@ -13,8 +13,8 @@ import java.util.StringTokenizer;
  */
 public class LongestMapper extends Mapper<LongWritable, Text, DescendingIntWritable, Text> {
 
-  private static final DescendingIntWritable lengthOut = new DescendingIntWritable( 0 );
-  private Text word = new Text();
+  private final DescendingIntWritable lengthOut = new DescendingIntWritable( 0 );
+  private final Text word = new Text();
   private static Integer maxLength = 0;
 
   @Override

@@ -13,7 +13,7 @@ import static org.stepanovdg.mapreduce.task2.Constants.TEMP_SEPARATOR;
  */
 public class LogsCombiner extends Reducer<IntWritable, Text, IntWritable, Text> {
 
-  private static final Text value = new Text();
+  private final Text value = new Text();
 
   @Override protected void reduce( IntWritable key, Iterable<Text> values, Context context )
     throws IOException, InterruptedException {

@@ -14,8 +14,8 @@ import java.io.IOException;
 
 public class ComplexIntTextWritable implements WritableComparable<ComplexIntTextWritable> {
 
-  private DescendingIntWritable intWritable;
-  private Text text;
+  private final DescendingIntWritable intWritable;
+  private final Text text;
 
 
   public ComplexIntTextWritable() {

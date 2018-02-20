@@ -13,8 +13,8 @@ import java.io.IOException;
  */
 public class LogsReducerCustom extends Reducer<IntWritable, TotalAndCountWritable, Text, TotalAndAverageWritable> {
 
-  private static final TotalAndAverageWritable out = new TotalAndAverageWritable();
-  private static final Text ip = new Text();
+  private final TotalAndAverageWritable out = new TotalAndAverageWritable();
+  private final Text ip = new Text();
 
 
   @Override protected void reduce( IntWritable key, Iterable<TotalAndCountWritable> values, Context context )

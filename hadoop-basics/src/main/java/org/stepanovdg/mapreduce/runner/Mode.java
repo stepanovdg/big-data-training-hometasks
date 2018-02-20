@@ -4,7 +4,7 @@ package org.stepanovdg.mapreduce.runner;
  * Created by Dmitriy Stepanov on 17.02.18.
  */
 public enum Mode {
-  LONGEST_WORD_v1, LONGEST_WORD_v2, PARSE_LOGS_FORIP_v1, PARSE_LOGS_FORIP_v2;
+  LONGEST_WORD_v1, LONGEST_WORD_v2, PARSE_LOGS_FORIP_v1, PARSE_LOGS_FORIP_v2, AMOUNT_HIGH_BID_v1, AMOUNT_HIGH_BID_v2;
 
   public static String generateModeHelp() {
     StringBuilder b = new StringBuilder();
