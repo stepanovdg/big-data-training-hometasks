@@ -15,7 +15,7 @@ public class LongestMapper extends Mapper<LongWritable, Text, DescendingIntWrita
 
   private final DescendingIntWritable lengthOut = new DescendingIntWritable( 0 );
   private final Text word = new Text();
-  private static Integer maxLength = 0;
+  private Integer maxLength = 0;
 
   @Override
   protected void map( LongWritable key, Text value, Context context )

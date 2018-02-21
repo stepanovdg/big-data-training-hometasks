@@ -21,4 +21,5 @@ public class Constants {
   public static final String BORDER_BID_PRICE_PROPERTY_NAME = "border.bid.price";
   public static final String CITY_DICTIONARY_FILE_NAME_EN = "city.en.txt";
   public static final String CITY_DICTIONARY_FILE_NAME_CN = "city.cn.txt";
+  public static final String IMPRESSION_BID_NEED_USER_AGENT = "impression.bid.needUserAgent";
 }

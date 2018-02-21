@@ -15,19 +15,16 @@ import java.util.Arrays;
 
 /**
  * Created by Dmitriy Stepanov on 18.02.18.
- */
-
-/**
  * Expects to have real ip in logs ;(
  */
 public class IpWritable extends BinaryComparable implements WritableComparable<BinaryComparable> {
 
-  public static final int V6_SIZE = 16;
-  public static final int V4_SIZE = 4;
+  static final int V6_SIZE = 16;
+  static final int V4_SIZE = 4;
 
   static {                                        // register this comparator
     /*
-    A Comparator optimized for ByteWritable.
+    A OnlyOneComparator optimized for ByteWritable.
    */
     Comparator comparator = new Comparator();
     WritableComparator.define( IpWritable.class, comparator );

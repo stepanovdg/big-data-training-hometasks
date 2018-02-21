@@ -4,6 +4,7 @@ import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import org.junit.Before;
 import org.junit.Test;
+import org.stepanovdg.mapreduce.task3.util.RecordUtil;
 
 import static org.junit.Assert.assertEquals;
 

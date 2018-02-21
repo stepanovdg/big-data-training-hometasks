@@ -16,7 +16,7 @@ public class LongestMapperComplex extends Mapper<LongWritable, Text, ComplexIntT
 
   private static final NullWritable nul = NullWritable.get();
   private final ComplexIntTextWritable complexOut = new ComplexIntTextWritable( 0, "" );
-  private static Integer maxLength = 0;
+  private Integer maxLength = 0;
 
   @Override
   protected void map( LongWritable key, Text value, Context context )

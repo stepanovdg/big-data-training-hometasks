@@ -13,6 +13,7 @@ import org.apache.hadoop.io.compress.SnappyCodec;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
@@ -33,9 +34,15 @@ import org.stepanovdg.mapreduce.task2.LogsReducerCustom;
 import org.stepanovdg.mapreduce.task2.writable.TotalAndAverageWritable;
 import org.stepanovdg.mapreduce.task2.writable.TotalAndCountWritable;
 import org.stepanovdg.mapreduce.task3.HighBidCombiner;
+import org.stepanovdg.mapreduce.task3.HighBidCombinerV2;
 import org.stepanovdg.mapreduce.task3.HighBidMapper;
+import org.stepanovdg.mapreduce.task3.HighBidMapperV2;
+import org.stepanovdg.mapreduce.task3.HighBidPartionioner;
 import org.stepanovdg.mapreduce.task3.HighBidReducer;
+import org.stepanovdg.mapreduce.task3.HighBidReducerV2;
 import org.stepanovdg.mapreduce.task3.input.HighBidInputFormat;
+import org.stepanovdg.mapreduce.task3.input.HighBidInputFormatV2;
+import org.stepanovdg.mapreduce.task3.writable.IntTextPairWritable;
 
 import java.net.URI;
 import java.util.ResourceBundle;
@@ -48,9 +55,9 @@ import static org.stepanovdg.mapreduce.task2.Constants.OUT_SEPARATOR;
 public class Runner extends Configured implements Tool {
 
   private static final String JOB_NAME = "stepanovdg";
-  public static final String WORDCOUNT_INPUT = "/wordcount/input";
-  public static final String WORDCOUNT_OUTPUT = "/wordcount/output";
-  public static final String CITY_DICTIONARY = "/wordcount/city";
+  private static final String WORDCOUNT_INPUT = "/wordcount/input";
+  private static final String WORDCOUNT_OUTPUT = "/wordcount/output";
+  private static final String CITY_DICTIONARY = "/wordcount/city";
   private static ResourceBundle bundle;
 
   public static void main( String[] args ) throws Exception {
@@ -154,7 +161,8 @@ public class Runner extends Configured implements Tool {
         job.setCombinerClass( LogsCombiner.class );
         job.setReducerClass( LogsReducer.class );
 
-        job.setOutputFormatClass( TextOutputFormat.class );
+        job.setOutputFormatClass( LazyOutputFormat.class );
+        LazyOutputFormat.setOutputFormatClass( job, TextOutputFormat.class );
         job.getConfiguration().set( "mapred.textoutputformat.separator", OUT_SEPARATOR );
 
         job.setMapOutputKeyClass( IntWritable.class );
@@ -172,12 +180,9 @@ public class Runner extends Configured implements Tool {
         job.setReducerClass( LogsReducerCustom.class );
 
         //SequenceFileAsBinaryOutputFormat.class
-        job.setOutputFormatClass( SequenceFileOutputFormat.class );
-       /* job.getConfiguration().set( "mapreduce.output.fileoutputformat.compress", "true" );
-        job.getConfiguration()
-          .set( "mapreduce.output.fileoutputformat.compress.codec", "org.apache.hadoop.io.compress.SnappyCodec" );
-        job.getConfiguration().set( "mapreduce.output.fileoutputformat.compress.type", "BLOCK" );
-*/
+        job.setOutputFormatClass( LazyOutputFormat.class );
+        LazyOutputFormat.setOutputFormatClass( job, SequenceFileOutputFormat.class );
+
         FileOutputFormat.setCompressOutput( job, true );
         FileOutputFormat.setOutputCompressorClass( job, SnappyCodec.class );
         SequenceFileOutputFormat.setOutputCompressionType( job, SequenceFile.CompressionType.BLOCK );
@@ -198,6 +203,8 @@ public class Runner extends Configured implements Tool {
         job.setReducerClass( HighBidReducer.class );
 
         job.setInputFormatClass( HighBidInputFormat.class );
+        job.setOutputFormatClass( LazyOutputFormat.class );
+        LazyOutputFormat.setOutputFormatClass( job, TextOutputFormat.class );
 
         job.setMapOutputKeyClass( IntWritable.class );
         job.setMapOutputValueClass( LongWritable.class );
@@ -215,7 +222,28 @@ public class Runner extends Configured implements Tool {
 
         break;
       case AMOUNT_HIGH_BID_v2:
+        job.setMapperClass( HighBidMapperV2.class );
+        job.setCombinerClass( HighBidCombinerV2.class );
+        job.setReducerClass( HighBidReducerV2.class );
+        job.setPartitionerClass( HighBidPartionioner.class );
 
+        job.setInputFormatClass( HighBidInputFormatV2.class );
+        job.setOutputFormatClass( LazyOutputFormat.class );
+        LazyOutputFormat.setOutputFormatClass( job, TextOutputFormat.class );
+
+        job.setMapOutputKeyClass( IntTextPairWritable.class );
+        job.setMapOutputValueClass( LongWritable.class );
+
+        job.setOutputKeyClass( Text.class );
+        job.setOutputValueClass( LongWritable.class );
+
+        job.addCacheFile(
+          new URI( cityFileOnHDFS_EN + "#" + org.stepanovdg.mapreduce.task3.Constants.CITY_DICTIONARY_FILE_NAME_EN ) );
+        if ( cityFileOnHDFS_CN != null ) {
+          job.addCacheFile(
+            new URI(
+              cityFileOnHDFS_CN + "#" + org.stepanovdg.mapreduce.task3.Constants.CITY_DICTIONARY_FILE_NAME_CN ) );
+        }
         break;
     }
 

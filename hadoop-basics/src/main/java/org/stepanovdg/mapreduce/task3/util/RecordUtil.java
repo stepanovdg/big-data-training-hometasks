@@ -1,4 +1,4 @@
-package org.stepanovdg.mapreduce.task3;
+package org.stepanovdg.mapreduce.task3.util;
 
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -12,7 +12,7 @@ import static org.stepanovdg.mapreduce.task3.Constants.*;
 public class RecordUtil {
 
   public static final Pattern pattern = Pattern.compile( IMP_REGEX );
-  public static final Pattern patternWithNames = Pattern.compile( IMP_REGEX_NAMES );
+  private static final Pattern patternWithNames = Pattern.compile( IMP_REGEX_NAMES );
 
   public static String parseImpressionLinePattern( String impression ) {
     Matcher matcher = pattern.matcher( impression );

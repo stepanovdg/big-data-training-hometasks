@@ -10,6 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.stepanovdg.mapreduce.task3.writable.IntTextPairWritable;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,14 +24,14 @@ import java.util.Locale;
 /**
  * Created by Dmitriy Stepanov on 19.02.18.
  */
-public class HighBidMapReduceTest {
+public class HighBidMapReduceV2Test {
 
   private static Locale aDefault;
-  private MapReduceDriver<IntWritable, IntWritable, IntWritable, LongWritable, Text, LongWritable>
-    mapReduceDriver;
-  private ReduceDriver<IntWritable, LongWritable, Text, LongWritable> reduceDriver;
-  private MapDriver<IntWritable, IntWritable, IntWritable, LongWritable> mapDriver;
   private static File city;
+  private MapReduceDriver<IntWritable, IntTextPairWritable, IntTextPairWritable, LongWritable, Text, LongWritable>
+    mapReduceDriver;
+  private ReduceDriver<IntTextPairWritable, LongWritable, Text, LongWritable> reduceDriver;
+  private MapDriver<IntWritable, IntTextPairWritable, IntTextPairWritable, LongWritable> mapDriver;
 
   @BeforeClass
   public static void setUpClass() {
@@ -57,14 +58,14 @@ public class HighBidMapReduceTest {
     mapReduceDriver = new MapReduceDriver<>();
     reduceDriver = new ReduceDriver<>();
     mapDriver = new MapDriver<>();
-    HighBidMapper mapper = new HighBidMapper();
-    final HighBidReducer reducer = new HighBidReducer() {
+    HighBidMapperV2 mapper = new HighBidMapperV2();
+    final HighBidReducerV2 reducer = new HighBidReducerV2() {
       @Override protected String getFileNameEn( Context context ) throws IOException {
         //noinspection deprecation
         return context.getLocalCacheFiles()[ 0 ].toString();
       }
     };
-    HighBidCombiner combiner = new HighBidCombiner();
+    HighBidCombinerV2 combiner = new HighBidCombinerV2();
     mapReduceDriver.setMapper( mapper );
     mapReduceDriver.setReducer( reducer );
     mapReduceDriver.setCombiner( combiner );
@@ -81,14 +82,14 @@ public class HighBidMapReduceTest {
 
   @Test
   public void testMapper() throws IOException {
-    mapDriver.withInput( new IntWritable( 22 ), new IntWritable( 251 ) );
-    mapDriver.withInput( new IntWritable( 11 ), new IntWritable( 251 ) );
-    mapDriver.withInput( new IntWritable( 22 ), new IntWritable( 249 ) );
-    mapDriver.withInput( new IntWritable( 11 ), new IntWritable( 252 ) );
-    mapDriver.withInput( new IntWritable( 22 ), new IntWritable( 250 ) );
-    mapDriver.withOutput( new IntWritable( 22 ), new LongWritable( 1 ) );
-    mapDriver.withOutput( new IntWritable( 11 ), new LongWritable( 1 ) );
-    mapDriver.withOutput( new IntWritable( 11 ), new LongWritable( 1 ) );
+    mapDriver.withInput( new IntWritable( 22 ), new IntTextPairWritable( 251, "agent string1" ) );
+    mapDriver.withInput( new IntWritable( 11 ), new IntTextPairWritable( 251, "agent string2" ) );
+    mapDriver.withInput( new IntWritable( 22 ), new IntTextPairWritable( 249, "agent string1" ) );
+    mapDriver.withInput( new IntWritable( 11 ), new IntTextPairWritable( 252, "agent string1" ) );
+    mapDriver.withInput( new IntWritable( 22 ), new IntTextPairWritable( 250, "agent string2" ) );
+    mapDriver.withOutput( new IntTextPairWritable( 22, "agent string1" ), new LongWritable( 1 ) );
+    mapDriver.withOutput( new IntTextPairWritable( 11, "agent string2" ), new LongWritable( 1 ) );
+    mapDriver.withOutput( new IntTextPairWritable( 11, "agent string1" ), new LongWritable( 1 ) );
     mapDriver.runTest();
   }
 
@@ -98,12 +99,12 @@ public class HighBidMapReduceTest {
     l1.add( new LongWritable( 1 ) );
     l1.add( new LongWritable( 3 ) );
     l1.add( new LongWritable( 1 ) );
-    reduceDriver.withInput( new IntWritable( 11 ), l1 );
+    reduceDriver.withInput( new IntTextPairWritable( 11, "ua1" ), l1 );
     l1 = new ArrayList<>();
     l1.add( new LongWritable( 1 ) );
-    reduceDriver.withInput( new IntWritable( 22 ), l1 );
-    reduceDriver.withOutput( new Text( "Pekin" ), new LongWritable( 5 ) );
-    reduceDriver.withOutput( new Text( "Moscow" ), new LongWritable( 1 ) );
+    reduceDriver.withInput( new IntTextPairWritable( 22, "ua2" ), l1 );
+    reduceDriver.withOutput( new Text( "Pekin\tua1" ), new LongWritable( 5 ) );
+    reduceDriver.withOutput( new Text( "Moscow\tua2" ), new LongWritable( 1 ) );
     reduceDriver.runTest();
 
   }
@@ -111,13 +112,18 @@ public class HighBidMapReduceTest {
   @Test
   public void testMapReduce() throws IOException {
     // mrunit distributed cache not working
-    mapReduceDriver.withInput( new IntWritable( 22 ), new IntWritable( 251 ) );
-    mapReduceDriver.withInput( new IntWritable( 11 ), new IntWritable( 251 ) );
-    mapReduceDriver.withInput( new IntWritable( 22 ), new IntWritable( 249 ) );
-    mapReduceDriver.withInput( new IntWritable( 11 ), new IntWritable( 252 ) );
-    mapReduceDriver.withInput( new IntWritable( 22 ), new IntWritable( 250 ) );
-    mapReduceDriver.withOutput( new Text( "Pekin" ), new LongWritable( 2 ) );
-    mapReduceDriver.withOutput( new Text( "Moscow" ), new LongWritable( 1 ) );
+    mapReduceDriver.withInput( new IntWritable( 22 ),
+      new IntTextPairWritable( 251, "Mozilla/4.0 (compatible; MSIE 6.0; Linux; SV1)" ) );
+    mapReduceDriver.withInput( new IntWritable( 11 ),
+      new IntTextPairWritable( 251, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)" ) );
+    mapReduceDriver.withInput( new IntWritable( 22 ),
+      new IntTextPairWritable( 249, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)" ) );
+    mapReduceDriver.withInput( new IntWritable( 11 ),
+      new IntTextPairWritable( 252, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)" ) );
+    mapReduceDriver.withInput( new IntWritable( 22 ),
+      new IntTextPairWritable( 250, "Mozilla/4.0 (compatible; MSIE 6.0; Linux; SV1)" ) );
+    mapReduceDriver.withOutput( new Text( "Pekin\tWindows" ), new LongWritable( 2 ) );
+    mapReduceDriver.withOutput( new Text( "Moscow\tLinux" ), new LongWritable( 1 ) );
     mapReduceDriver.runTest();
   }
 }

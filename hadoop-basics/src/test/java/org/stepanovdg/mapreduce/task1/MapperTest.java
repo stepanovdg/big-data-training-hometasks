@@ -4,7 +4,6 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.stepanovdg.mapreduce.task1.writable.ComplexIntTextWritable;
@@ -17,7 +16,7 @@ import java.io.IOException;
  */
 public class MapperTest {
 
-  public static final NullWritable NUL = NullWritable.get();
+  private static final NullWritable NUL = NullWritable.get();
   private MapDriver<LongWritable, Text, DescendingIntWritable, Text>
     mapDriver;
   private MapDriver<LongWritable, Text, ComplexIntTextWritable, NullWritable> mapDriverComplex;
@@ -25,10 +24,10 @@ public class MapperTest {
   @Before
   public void setUp() {
     LongestMapper mapper = new LongestMapper();
-    mapDriver = new MapDriver<LongWritable, Text, DescendingIntWritable, Text>();
+    mapDriver = new MapDriver<>();
     mapDriver.setMapper( mapper );
     LongestMapperComplex complex = new LongestMapperComplex();
-    mapDriverComplex = new MapDriver<LongWritable, Text, ComplexIntTextWritable, NullWritable>();
+    mapDriverComplex = new MapDriver<>();
     mapDriverComplex.setMapper( complex );
   }
 
@@ -100,9 +99,4 @@ public class MapperTest {
     mapDriverComplex.runTest();
   }
 
-  @After
-  public void tearDown() {
-    mapDriver.resetExpectedCounters();
-    mapDriver.resetOutput();
-  }
 }

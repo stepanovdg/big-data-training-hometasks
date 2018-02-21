@@ -8,7 +8,7 @@ import org.apache.hadoop.io.WritableComparator;
  */
 public class DescendingIntWritable extends IntWritable {
 
-  public DescendingIntWritable() {
+  DescendingIntWritable() {
     super();
   }
 
@@ -25,7 +25,7 @@ public class DescendingIntWritable extends IntWritable {
   }
 
   /**
-   * A Comparator optimized for IntWritable.
+   * A OnlyOneComparator optimized for IntWritable.
    */
   public static class Comparator extends WritableComparator {
     public Comparator() {
@@ -37,6 +37,7 @@ public class DescendingIntWritable extends IntWritable {
                         byte[] b2, int s2, int l2 ) {
       int thisValue = readInt( b1, s1 );
       int thatValue = readInt( b2, s2 );
+      //noinspection UseCompareMethod
       return ( thisValue < thatValue ? 1 : ( thisValue == thatValue ? 0 : -1 ) );
     }
   }

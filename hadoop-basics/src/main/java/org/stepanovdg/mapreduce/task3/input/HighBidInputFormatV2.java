@@ -10,6 +10,7 @@ import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.stepanovdg.mapreduce.task3.writable.IntTextPairWritable;
 
 /**
  * Created by Dmitriy Stepanov on 19.02.18.
@@ -17,7 +18,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
  * Key - CityId
  * Value - BID price
  */
-public class HighBidInputFormat extends FileInputFormat<IntWritable, IntWritable> {
+public class HighBidInputFormatV2 extends FileInputFormat<IntWritable, IntTextPairWritable> {
 
   @Override
   protected boolean isSplitable( JobContext context, Path file ) {
@@ -27,8 +28,9 @@ public class HighBidInputFormat extends FileInputFormat<IntWritable, IntWritable
   }
 
   @Override
-  public RecordReader<IntWritable, IntWritable> createRecordReader( InputSplit split, TaskAttemptContext context ) {
+  public RecordReader<IntWritable, IntTextPairWritable> createRecordReader( InputSplit split,
+                                                                            TaskAttemptContext context ) {
     context.setStatus( split.toString() );
-    return new ImpressionRecordReaderV1( context.getConfiguration() );
+    return new ImpressionRecordReaderV2( context.getConfiguration() );
   }
 }
