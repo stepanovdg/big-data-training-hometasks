@@ -30,4 +30,4 @@ fi
 #$sshdp /root/training/resources/entry-point.sh -t 1 -s 2 -f true
 #${sshdp} /root/training/resources/entry-point.sh -t 1 -s 2
 ${sshdp} 'chmod +x /home/devuser/training/resources/entry-point.sh'
-${sshdp} /home/devuser/training/resources/entry-point.sh -t 1 -s 3 -f true
+${sshdp} /home/devuser/training/resources/entry-point.sh -t 2 -s 0 -f true

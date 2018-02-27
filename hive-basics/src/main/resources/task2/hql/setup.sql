@@ -1,4 +1,4 @@
-source ${hiveconf:dir}/task1/hql/hivevar.sql;
+source ${hiveconf:dir}/task2/hql/hivevar.sql;
 set hivevar:cur_date=${current_date};
 SET hive.exec.dynamic.partition = true;
 set hive.exec.dynamic.partition.mode=nonstrict;

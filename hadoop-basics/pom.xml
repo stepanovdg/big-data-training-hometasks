@@ -18,8 +18,6 @@
   <name>Hometasks for hadoop basics module</name>
 
   <properties>
-    <mrunit.version>1.1.0</mrunit.version>
-    <UserAgentUtils.version>1.21</UserAgentUtils.version>
   </properties>
   <dependencies>
     <dependency>
@@ -29,14 +27,12 @@
     <dependency>
       <groupId>org.apache.mrunit</groupId>
       <artifactId>mrunit</artifactId>
-      <version>${mrunit.version}</version>
       <classifier>hadoop2</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>eu.bitwalker</groupId>
       <artifactId>UserAgentUtils</artifactId>
-      <version>${UserAgentUtils.version}</version>
     </dependency>
     <dependency>
       <groupId>com.carrotsearch</groupId>
