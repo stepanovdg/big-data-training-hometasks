@@ -17,16 +17,17 @@ import java.io.IOException;
 public abstract class AImpressionRecordReader<K, V> extends RecordReader<K, V> {
 
   private final LineRecordReader lineRecordReader;
-  K key;
-  V value;
+  protected K key;
+  protected V value;
 
-  @VisibleForTesting AImpressionRecordReader( LineRecordReader lineRecordReader, K key, V value ) {
+  @VisibleForTesting
+  protected AImpressionRecordReader( LineRecordReader lineRecordReader, K key, V value ) {
     this.lineRecordReader = lineRecordReader;
     this.key = key;
     this.value = value;
   }
 
-  AImpressionRecordReader( Configuration configuration ) {
+  protected AImpressionRecordReader( Configuration configuration ) {
     String delimiter = configuration.get(
       "textinputformat.record.delimiter" );
     byte[] recordDelimiterBytes = null;
@@ -75,8 +76,8 @@ public abstract class AImpressionRecordReader<K, V> extends RecordReader<K, V> {
 
   protected abstract void findKeyValue( byte[] line, int lineLen ) throws IOException;
 
-  int findSeparatorFromEnd( byte[] utf, int end,
-                            byte sep ) {
+  protected int findSeparatorFromEnd( byte[] utf, int end,
+                                      byte sep ) {
     for ( int i = end - 1; i >= 0; i-- ) {
       if ( utf[ i ] == sep ) {
         return i;
@@ -85,8 +86,8 @@ public abstract class AImpressionRecordReader<K, V> extends RecordReader<K, V> {
     return -1;
   }
 
-  int findSeparatorFromStart( byte[] utf, int start,
-                              byte sep ) {
+  protected int findSeparatorFromStart( byte[] utf, int start,
+                                        byte sep ) {
     for ( int i = start; i <= utf.length; i++ ) {
       if ( utf[ i ] == sep ) {
         return i;

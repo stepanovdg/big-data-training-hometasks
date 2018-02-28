@@ -22,6 +22,9 @@ function  schdp() {
 
 schdp ${DIR}/../src/main/resources/
 wait
+schdp ${DIR}/../target/hive-basics-1.1.1-SNAPSHOT.jar
+schdp ${DIR}/../../hadoop-basics/target/hadoop-basics-1.0-SNAPSHOT.jar
+${sshdp} 'hdfs dfs -put -f /home/devuser/training/hive-basics-1.1.1-SNAPSHOT.jar /user/stepanov/'
 
 if [ -z ${1+x} ]; then
 		exit 0;
@@ -30,4 +33,5 @@ fi
 #$sshdp /root/training/resources/entry-point.sh -t 1 -s 2 -f true
 #${sshdp} /root/training/resources/entry-point.sh -t 1 -s 2
 ${sshdp} 'chmod +x /home/devuser/training/resources/entry-point.sh'
-${sshdp} /home/devuser/training/resources/entry-point.sh -t 2 -s 0 -f true
+${sshdp} /home/devuser/training/resources/entry-point.sh -t 3 -s 0 -f true
+#${sshdp} /home/devuser/training/resources/entry-point.sh -t 3 -s 0

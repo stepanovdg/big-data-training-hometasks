@@ -24,16 +24,12 @@ public class UserAgentUDF extends GenericUDF {
     ArrayList<ObjectInspector> structFieldObjectInspectors = new ArrayList<ObjectInspector>();
 
     // fill struct field names
-    // type
     structFieldNames.add( "device" );
     structFieldObjectInspectors.add( PrimitiveObjectInspectorFactory.writableStringObjectInspector );
-    //family
-    structFieldNames.add( "OS Name" );
+    structFieldNames.add( "os_name" );
     structFieldObjectInspectors.add( PrimitiveObjectInspectorFactory.writableStringObjectInspector );
-    // OS name
-    structFieldNames.add( "Browser" );
+    structFieldNames.add( "browser" );
     structFieldObjectInspectors.add( PrimitiveObjectInspectorFactory.writableStringObjectInspector );
-    // device
     structFieldNames.add( "UA" );
     structFieldObjectInspectors.add( PrimitiveObjectInspectorFactory.writableStringObjectInspector );
 

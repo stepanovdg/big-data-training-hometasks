@@ -15,6 +15,7 @@ function tableExists(){
 function putToHDFS(){
   hdfs dfs -mkdir -p $2
   hdfs dfs -put -f ${DIR}/$1 $2
+  hdfs dfs -chmod -R 777 $2
 }
 
 function mkDir(){

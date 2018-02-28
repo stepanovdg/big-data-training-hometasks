@@ -3,7 +3,7 @@ USE ${hivevar:db_name};
 
 set mapred.reduce.tasks=1;
 
--- SELECT /*+ MAPJOIN(TAB2) */ a.airport, count(*) as_count
+-- SELECT /*+ MAPJOIN(f,a) */ a.airport, count(*) as_count
 -- FROM flights f JOIN airports a ON 1=1
 -- WHERE ( f.month > 5 AND f.month < 9 ) AND (f.dest_iata = a.iata OR f.origin_iata = a.iata)
 -- GROUP BY (a.airport)

@@ -11,7 +11,7 @@
   <name>Hometasks for hive basics module</name>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>hive-basics</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -26,28 +26,33 @@
       <groupId>eu.bitwalker</groupId>
       <artifactId>UserAgentUtils</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.stepanovdg</groupId>
+      <artifactId>hadoop-basics</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>Copy to cluster</id>
-            <phase>install</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${basedir}/script/copyToCluster.sh</executable>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+      <!--      <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>Copy to cluster</id>
+                  <phase>install</phase>
+                  <goals>
+                    <goal>exec</goal>
+                  </goals>
+                  <configuration>
+                    <executable>${basedir}/script/copyToCluster.sh</executable>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>-->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
