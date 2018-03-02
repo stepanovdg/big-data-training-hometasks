@@ -24,7 +24,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS CITY(
     name STRING
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ' '
+FIELDS TERMINATED BY '\t'
 STORED AS TEXTFILE
 LOCATION '${hivevar:city_location}';
 
@@ -81,3 +81,17 @@ STORED AS
   INPUTFORMAT 'org.stepanovdg.hive.input.CityUserAgentInputFormat'
   OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
 LOCATION '${hivevar:impr_location}';
+
+show partitions impression_log;
+--TODO do not understand why need
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-19') LOCATION '/user/stepanov/impr/date_day=2013-10-19';
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-20') LOCATION '/user/stepanov/impr/date_day=2013-10-20';
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-21') LOCATION '/user/stepanov/impr/date_day=2013-10-21';
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-22') LOCATION '/user/stepanov/impr/date_day=2013-10-22';
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-23') LOCATION '/user/stepanov/impr/date_day=2013-10-23';
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-24') LOCATION '/user/stepanov/impr/date_day=2013-10-24';
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-25') LOCATION '/user/stepanov/impr/date_day=2013-10-25';
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-26') LOCATION '/user/stepanov/impr/date_day=2013-10-26';
+ALTER TABLE impression_log ADD PARTITION (${hivevar:imp_part_name}='2013-10-27') LOCATION '/user/stepanov/impr/date_day=2013-10-27';
+--
+show partitions impression_log;

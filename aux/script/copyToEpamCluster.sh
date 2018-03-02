@@ -21,16 +21,13 @@ function  schdp() {
 }
 
 schdp ${DIR}/../src/main/resources/
+schdp ${DIR}/../heavy/
+
 wait
-schdp ${DIR}/../target/hive-basics-1.1.1-SNAPSHOT.jar
-schdp ${DIR}/../../hadoop-basics/target/hadoop-basics-1.0-SNAPSHOT.jar
-schdp ${DIR}/../../hadoop-basics/lib/UserAgentUtils-1.21.jar
-${sshdp} 'hdfs dfs -put -f /home/devuser/training/hive-basics-1.1.1-SNAPSHOT.jar /user/stepanov/'
 
 if [ -z ${1+x} ]; then
 		exit 0;
 fi
-
 
 ${sshdp} 'chmod +x /home/devuser/training/resources/entry-point.sh'
 ${sshdp} /home/devuser/training/resources/entry-point.sh -t 2 -s 0 -f true

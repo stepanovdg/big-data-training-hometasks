@@ -13,7 +13,4 @@ SELECT /*+ MAPJOIN(f,n) */ 'NYC', count(*)
 FROM flights f JOIN nyc_airports n ON 1=1
 WHERE f.yearOf=2007 AND f.month=6 AND (f.dest_iata = n.iata OR f.origin_iata = n.iata);
 
--- TODO think about ROLLUP DRILLDOWN ALSO
--- TODO SCREENSHOTS redo
-
 DROP TABLE NYC_AIRPORTS;

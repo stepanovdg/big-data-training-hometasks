@@ -1,8 +1,6 @@
 source ${hiveconf:dir}/task1/hql/hivevar.sql;
 USE ${hivevar:db_name};
 
-set mapred.reduce.tasks=1;
-
 SELECT c.description, f.as_count FROM ((
 SELECT carrier, count(carrier) as_count
 FROM flights

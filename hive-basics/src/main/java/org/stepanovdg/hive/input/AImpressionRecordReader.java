@@ -146,13 +146,7 @@ public abstract class AImpressionRecordReader<K, V> extends RecordReader<K, V>
   }
 
   @Override public boolean next( K key, V value ) throws IOException {
-
-    boolean nextKeyValue = nextKeyValue();
-/*    key.set( this.key.get() );
-    value.setOne( this.value.getOne() );
-    value.setTwo( this.value.getTwo() );*/
-    //TODO hope commented not required as already assigned to creted key allr equired
-    return nextKeyValue;
+    return nextKeyValue();
   }
 
   @Override public K createKey() {

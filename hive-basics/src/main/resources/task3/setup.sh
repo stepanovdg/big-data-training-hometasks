@@ -4,6 +4,7 @@ HDFS_WORKING_DIR=$(prop 'hdfs_data_dir')
 function loadDataForTables(){
   putToHDFS ../$(prop 'user_agent_jar') ${HDFS_WORKING_DIR}/
   putToHDFS ../$(prop 'dependency_jar') ${HDFS_WORKING_DIR}/
+  putToHDFS ../$(prop 'ua_jar') ${HDFS_WORKING_DIR}/
   putToHDFS /files/city.en.txt ${HDFS_WORKING_DIR}/$(prop 'city_dir')
   putWithRenamingAccordingtoPartition
 }

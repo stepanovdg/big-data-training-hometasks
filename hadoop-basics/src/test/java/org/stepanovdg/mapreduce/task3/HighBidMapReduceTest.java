@@ -25,6 +25,7 @@ import java.util.Locale;
  */
 public class HighBidMapReduceTest {
 
+  private static String OS = System.getProperty( "os.name" ).toLowerCase();
   private static Locale aDefault;
   private MapReduceDriver<IntWritable, IntWritable, IntWritable, LongWritable, Text, LongWritable>
     mapReduceDriver;
@@ -73,10 +74,15 @@ public class HighBidMapReduceTest {
 
     mapDriver.setMapper( mapper );
 
+    String cityPath = city.getAbsolutePath() + "#" + Constants.CITY_DICTIONARY_FILE_NAME_EN;
+    if ( !( OS.contains( "nix" ) || OS.contains( "nux" ) || OS.contains( "aix" ) ) ) {
+      cityPath = "file:/" + cityPath.replace( "\\", "/" );
+    }
+    System.out.println( cityPath );
     reduceDriver =
-      reduceDriver.withCacheFile( new URI( city.getAbsolutePath() + "#" + Constants.CITY_DICTIONARY_FILE_NAME_EN ) );
+      reduceDriver.withCacheFile( new URI( cityPath ) );
     mapReduceDriver =
-      mapReduceDriver.withCacheFile( new URI( city.getAbsolutePath() + "#" + Constants.CITY_DICTIONARY_FILE_NAME_EN ) );
+      mapReduceDriver.withCacheFile( new URI( cityPath ) );
   }
 
   @Test

@@ -40,3 +40,7 @@ function prop() {
 function runHive(){
    hive -v --hiveconf dir=${DIR} -f ${DIR}/$1
 }
+
+function runBeeline(){
+   beeline -u 'jdbc:hive2://ecsc00a01699.epam.com:2181,ecsc00a01782.epam.com:2181,ecsc00a016c7.epam.com:2181/;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2' -f ${DIR}/$1
+}

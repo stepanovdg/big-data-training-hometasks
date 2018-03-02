@@ -21,6 +21,7 @@
   <modules>
     <module>hadoop-basics</module>
     <module>hive-basics</module>
+    <module>aux</module>
   </modules>
 
   <properties>

@@ -1,7 +1,6 @@
 source ${hiveconf:dir}/task1/hql/hivevar.sql;
 USE ${hivevar:db_name};
 
-set mapred.reduce.tasks=1;
 
 -- SELECT /*+ MAPJOIN(f,a) */ a.airport, count(*) as_count
 -- FROM flights f JOIN airports a ON 1=1
@@ -42,4 +41,4 @@ SELECT a.airport, u.as_sum_count FROM airports a JOIN (
   SORT BY as_sum_count DESC LIMIT 5) u
 ON a.iata = u.asiata;
 
-DROP TABLE SUMMER_FLIGHTS;
+--DROP TABLE SUMMER_FLIGHTS;

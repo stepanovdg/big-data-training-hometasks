@@ -1,6 +1,7 @@
 package org.stepanovdg.hive;
 
 import eu.bitwalker.useragentutils.UserAgent;
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.UDFType;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
@@ -15,6 +16,19 @@ import java.util.ArrayList;
 /**
  * Created by Dmitriy Stepanov on 27.02.18.
  */
+
+@Description(
+  name = "parseUserAgent",
+  value = "_FUNC_(str) - Parse user agent string into struct",
+  extended = "Example:\n"
+    + "ua_string= \"Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)\"  " +
+    "  > SELECT parseUserAgent(ua_string) FROM logs a;\n"
+    + ""
+    + "    device  : Personal computer\n"
+    + "    OS name : Windows 7\n"
+    + "    Browser : IE\n"
+    + "    UA      : Browser\n"
+)
 @UDFType( deterministic = false )
 public class UserAgentUDF extends GenericUDF {
 

@@ -39,8 +39,7 @@ public class LogsMapper extends Mapper<LongWritable, Text, IntWritable, Text> {
     if ( matcher.find() ) {
       processUserAgent( matcher.group( "userAgent" ), context );
       ip.set( Integer.parseInt( matcher.group( "ip" ) ) );
-      //Concatenation woulf transform to stringbuilder
-      out.set( matcher.group( "bytes" ) + TEMP_SEPARATOR + 1 );
+      out.set( new StringBuilder( matcher.group( "bytes" ) ).append( TEMP_SEPARATOR ).append( 1 ).toString() );
       context.write( ip, out );
     } else {
       matcher = pattern_304.matcher( value.toString() );
