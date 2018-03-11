@@ -25,5 +25,5 @@ function prop() {
 }
 
 function runMysql(){
-  mysql -u $(prop 'mysql_user') -password=$(prop 'mysql_password') $1 \q
+  mysql -s -u $(prop 'mysql_user') --password=$(prop 'mysql_password') -D mysql -e "$1"
 }

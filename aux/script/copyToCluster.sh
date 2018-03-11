@@ -13,18 +13,20 @@ cluster=$2
 
 sshdp='ssh -p 2222 -oStrictHostKeyChecking=no root@sandbox.hortonworks.com'
 
+CLUST_DIR=/root/training/aux
+
 function  schdp() {
-  ${sshdp} 'mkdir -p /root/training/'
-	scp -P 2222 -oStrictHostKeyChecking=no -r $1 root@sandbox.hortonworks.com:/root/training/ &
+  ${sshdp} "mkdir -p ${CLUST_DIR}"
+	scp -P 2222 -oStrictHostKeyChecking=no -r $1 root@sandbox.hortonworks.com:${CLUST_DIR} &
 }
 
 schdp ${DIR}/../src/main/resources/
+schdp ${DIR}/../heavy/
 wait
 
 if [ -z ${1+x} ]; then
 		exit 0;
 fi
 
-${sshdp} 'chmod +x /root/training/resources/entry-point.sh'
-#$sshdp /root/training/resources/entry-point.sh -t 1 -s 2 -f true
-${sshdp} /root/training/resources/entry-point.sh -t 1 -s 2
+${sshdp} "chmod +x ${CLUST_DIR}/resources/entry-point.sh"
+${sshdp} ${CLUST_DIR}/resources/entry-point.sh -t 1

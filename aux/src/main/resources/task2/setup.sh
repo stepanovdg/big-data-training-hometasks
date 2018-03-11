@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
 
 function loadDataForTables(){
-  return 0;
+  rm -rf $(prop 'pos_dir');
+  mkdir -p $(prop 'pos_dir');
+  #touch $(prop 'pos_file');
 }
 
 function setupTables(){
   #-Dflume.root.logger=DEBUG,console -Dorg.apache.flume.log.printconfig=true -Dorg.apache.flume.log.rawdata=true
-  bin/flume-ng agent -n $(prop 'agent_name') -c conf -f conf/flume-conf.properties.template
+  nohup flume-ng agent -n "$(prop 'agent_name')" -c conf -f ${DIR}/task2/flume-conf.properties  > flume.log &
 }
 
 function checkRequired(){
   local ret;
-  #ps aux | grep $(prop 'agent_name')
-  ps -fC $(prop 'agent_name')
-  ret=$?;
-  if [[ "$ret" != "0" ]];
-    then
-      return 0;
-  fi
-  return 1;
+  output=`ps aux|grep $(prop 'agent_name')|grep -v grep`
+  set -- $output
+  pid=$2
+  kill $pid
+  sleep 2
+  kill -9 $pid >/dev/null 2>&1
+  return 1
 }

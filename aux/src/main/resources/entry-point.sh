@@ -12,7 +12,7 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 ENV=${DIR}/run
 FORCE="0";
 
-source ${DIR}/global-functions.sh
+source ${DIR}/common.sh
 
 displayHelp(){
 	echo "Parameters:

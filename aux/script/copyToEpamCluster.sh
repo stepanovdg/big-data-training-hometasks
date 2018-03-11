@@ -21,7 +21,7 @@ function  schdp() {
 }
 
 schdp ${DIR}/../src/main/resources/
-schdp ${DIR}/../heavy/
+#schdp ${DIR}/../heavy/
 
 wait
 
