@@ -22,6 +22,7 @@
     <module>hadoop-basics</module>
     <module>hive-basics</module>
     <module>aux</module>
+    <module>spark-core</module>
   </modules>
 
   <properties>
