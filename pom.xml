@@ -23,6 +23,7 @@
     <module>hive-basics</module>
     <module>aux</module>
     <module>spark-core</module>
+    <module>spark-sql</module>
   </modules>
 
   <properties>
