@@ -11,10 +11,8 @@ object BidItem {
 
   implicit def round(value: Double, places: Int): Double = {
     if (places < 0) throw new IllegalArgumentException
-    val factor = Math.pow(10, places).toLong
-    val value2 = value * factor
-    val tmp = value2.round
-    tmp.toDouble / factor
+    // Correct mode in expected results HALF_UP
+    BigDecimal(value).setScale(places, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
 }
 

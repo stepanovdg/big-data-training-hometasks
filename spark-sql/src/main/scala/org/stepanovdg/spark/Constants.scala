@@ -10,6 +10,7 @@ object Constants {
   val DELIMITER = ","
 
   val CSV_FORMAT = "com.databricks.spark.csv"
+  val PRECISION = 3
 
   val motelID = "MotelID"
   val bidDate = "BidDate"

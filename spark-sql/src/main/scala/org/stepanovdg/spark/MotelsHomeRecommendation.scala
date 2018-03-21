@@ -147,6 +147,7 @@ object MotelsHomeRecommendation {
         true
       } catch {
         case e1: NumberFormatException => false
+        case e2: NullPointerException => false
       }
     }
     val toDoubleUDF = udf((s: String) => s.toDouble)
@@ -165,9 +166,12 @@ object MotelsHomeRecommendation {
   }
 
   def getEnriched(bids: DataFrame, motels: DataFrame): DataFrame = {
+    val roundUdf = udf((value: Double) => BidItem.round(value, PRECISION))
     bids.withColumn("rank", dense_rank().over(Window.partitionBy(col(motelID), col(bidDate)).orderBy(col(price).desc)))
       .where(col("rank") === 1).drop(col("rank"))
       .join(broadcast(motels), bids(motelID) <=> motels(motelID)).drop(motels(motelID))
+      .withColumn("round_price", roundUdf(col(price)))
+      .drop(col(price)).withColumnRenamed("round_price", price)
       .select(ENRICHED_HEADER.map(col): _*)
   }
 }

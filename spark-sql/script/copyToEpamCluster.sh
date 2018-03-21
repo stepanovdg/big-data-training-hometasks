@@ -22,7 +22,9 @@ function  schdp() {
 }
 
 schdp ${DIR}/../target/spark-sql-1.0-SNAPSHOT.jar
-#schdp /home/dstepanov/projects/BigData/bigdata-training/dev/homeworks/spark-core/dataset/local
+#schdp /home/dstepanov/projects/BigData/bigdata-training/dev/homeworks/spark-core/dataset/local/bids.gz.parquet
+#schdp /home/dstepanov/projects/BigData/bigdata-training/dev/homeworks/spark-core/dataset/local/motels.gz.parquet
+#schdp /home/dstepanov/projects/BigData/bigdata-training/dev/homeworks/spark-core/dataset/local/exchange_rate.txt
 
 wait
 
@@ -32,10 +34,10 @@ fi
 
 
 #${sshdp} hdfs dfs -mkdir -p ${HDFS_DIR}
-#${sshdp} hdfs dfs -put -f ${CLUST_DIR}/local/bids.txt ${HDFS_DIR}
-#${sshdp} hdfs dfs -put -f ${CLUST_DIR}/local/exchange_rate.txt ${HDFS_DIR}
-#${sshdp} hdfs dfs -put -f ${CLUST_DIR}/local/motels.txt ${HDFS_DIR}
-${sshdp}  hdfs dfs -rm -r -f -skipTrash ${HDFS_DIR}/spark-core-output
+#${sshdp} hdfs dfs -put -f ${CLUST_DIR}/bids.gz.parquet ${HDFS_DIR}
+#${sshdp} hdfs dfs -put -f ${CLUST_DIR}/exchange_rate.txt ${HDFS_DIR}
+#${sshdp} hdfs dfs -put -f ${CLUST_DIR}/motels.gz.parquet ${HDFS_DIR}
+${sshdp}  hdfs dfs -rm -r -f -skipTrash ${HDFS_DIR}/spark-sql-output
 ${sshdp} << EOF
   export SPARK_MAJOR_VERSION=2
   /usr/hdp/current/spark2-client/bin/spark-submit --master yarn --deploy-mode cluster --driver-memory 510mb --num-executors 6 --executor-memory 510mb --conf spark.executor.cores=1 \
